@@ -1,0 +1,23 @@
+{
+  "name": "provider-switch",
+  "version": "0.1.0",
+  "description": "Switch the API provider of a running Claude Code session with no restart: reads cc-switch's provider list, applies the chosen env for this session only, and records the choice per session.",
+  "author": {
+    "name": "moxisuki",
+    "url": "https://github.com/moxisuki"
+  },
+  "userConfig": {
+    "nodeBin": {
+      "type": "string",
+      "title": "Node binary",
+      "description": "Node 22.5+ (for node:sqlite). Empty uses node on PATH.",
+      "default": ""
+    },
+    "switchModel": {
+      "type": "boolean",
+      "title": "Switch the model too",
+      "description": "After switching provider, run /model with the model the provider names. Claude Code records it as the default for new sessions; turn this off to leave the model alone.",
+      "default": true
+    }
+  }
+}

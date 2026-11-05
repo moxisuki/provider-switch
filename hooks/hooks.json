@@ -1,0 +1,1 @@
+{ "description": "provider-switch hooks module", "modules": ["./register.tsx"] }

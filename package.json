@@ -1,0 +1,10 @@
+{
+  "name": "provider-switch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hot provider switching for Claude Code sessions.",
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}
