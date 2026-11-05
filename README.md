@@ -4,6 +4,8 @@
 
 **Switch the API provider of a running Claude Code session. No restart, no settings.json.**
 
+[English](README.md) · [简体中文](README.zh-CN.md)
+
 ```
 /plugin install provider-switch --marketplace moxisuki/provider-switch
 ```
@@ -32,6 +34,7 @@ yourself instead.
 ```
 /provider            # TUI picker: arrows, Enter, Esc
 /provider list       # plain table
+/provider reload     # re-read cc-switch
 /provider deepseek   # by name
 ```
 
@@ -63,19 +66,6 @@ behaviour; turn `switchModel` off in `/config` to leave the model untouched.
 - Every key is spelled out in `hooks/lib/env.ts` — `$.env.set` accepts only string literals, so a
   variable cc-switch adds later is reported, not applied.
 - In-flight requests finish on the old provider; prompt cache is lost once per switch.
-
-## 中文
-
-**依赖 cc-switch**：本插件不创建、不修改、也不自己保存供应商，只切换你在 cc-switch 里**已经配置好**的那些。
-
-- 必须先装 cc-switch，并且列表里至少有一个 Claude 供应商
-- 列表从 `~/.cc-switch/cc-switch.db` 的 `providers`（`app_type='claude'`）读取，**只读**，从不写入
-- cc-switch 的公共配置 `common_config_claude` 会垫在每个供应商的 `env` 之下
-- 没装 cc-switch、库不存在或列表为空：`/provider` 直接说明，不做任何改动
-- 增删改供应商请在 cc-switch 里做；`/provider reload` 重新读列表
-
-切换本身用 `$.env.set` 改进程环境，下一条请求即生效；不写 `settings.json`，选择按 session 存在自己的 SQLite 里。
-`/provider` 打开 TUI 选择器，prompt 下方提示行末尾显示当前供应商和模型。
 
 ## License
 
