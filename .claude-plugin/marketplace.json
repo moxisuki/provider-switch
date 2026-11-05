@@ -1,13 +1,18 @@
 {
   "name": "provider-switch",
-  "owner": { "name": "moxisuki", "url": "https://github.com/moxisuki" },
+  "owner": {
+    "name": "moxisuki",
+    "url": "https://github.com/moxisuki"
+  },
   "description": "Hot provider switching for Claude Code sessions.",
   "plugins": [
     {
       "name": "provider-switch",
       "source": "./",
-      "description": "Switch the API provider of a running Claude Code session with no restart: reads cc-switch's provider list, applies the chosen env live, records the choice per session.",
-      "author": { "name": "moxisuki" },
+      "description": "Switch the API provider of a running Claude Code session with no restart. Depends on cc-switch: reads the provider list configured there, applies the chosen env live, records the choice per session.",
+      "author": {
+        "name": "moxisuki"
+      },
       "homepage": "https://github.com/moxisuki/provider-switch",
       "category": "developer-tools"
     }

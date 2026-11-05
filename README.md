@@ -8,8 +8,24 @@
 /plugin install provider-switch --marketplace moxisuki/provider-switch
 ```
 
-Requires Node 22.5+ (for `node:sqlite`), Claude Code 2.1.318+, and
-[cc-switch](https://github.com/farion1231/cc-switch) as the provider list.
+Requires Node 22.5+ (for `node:sqlite`), Claude Code 2.1.318+, **and
+[cc-switch](https://github.com/farion1231/cc-switch)** — see below.
+
+## This mod depends on cc-switch
+
+provider-switch does **not** create, edit or store providers of its own. It switches between the
+providers **you have already configured in [cc-switch](https://github.com/farion1231/cc-switch)**.
+
+- cc-switch must be installed, and must already have at least one Claude provider in its list
+- the list is read from `~/.cc-switch/cc-switch.db` (`providers` where `app_type='claude'`), opened
+  **read-only** — this mod never writes to it
+- the shared base config (`common_config_claude`) is merged underneath each provider's `env`
+- no cc-switch, no database, or an empty list: `/provider` says so and changes nothing
+- adding, editing or removing a provider happens **in cc-switch**; `/provider reload` re-reads the list
+- override the database path with `CC_SWITCH_DB` if yours is elsewhere
+
+Without cc-switch there is nothing to switch — set the `ANTHROPIC_*` variables in `settings.json`
+yourself instead.
 
 ## Use
 
@@ -50,9 +66,16 @@ behaviour; turn `switchModel` off in `/config` to leave the model untouched.
 
 ## 中文
 
-给运行中的 Claude Code 会话热切换 API 供应商：只读 cc-switch 的供应商列表，用 `$.env.set` 改进程环境，
-下一条请求就换上游；不写 `settings.json`，选择按 session 记在自己的 SQLite 里。`/provider` 打开 TUI 选择器，
-prompt 下方提示行末尾显示当前供应商和模型。
+**依赖 cc-switch**：本插件不创建、不修改、也不自己保存供应商，只切换你在 cc-switch 里**已经配置好**的那些。
+
+- 必须先装 cc-switch，并且列表里至少有一个 Claude 供应商
+- 列表从 `~/.cc-switch/cc-switch.db` 的 `providers`（`app_type='claude'`）读取，**只读**，从不写入
+- cc-switch 的公共配置 `common_config_claude` 会垫在每个供应商的 `env` 之下
+- 没装 cc-switch、库不存在或列表为空：`/provider` 直接说明，不做任何改动
+- 增删改供应商请在 cc-switch 里做；`/provider reload` 重新读列表
+
+切换本身用 `$.env.set` 改进程环境，下一条请求即生效；不写 `settings.json`，选择按 session 存在自己的 SQLite 里。
+`/provider` 打开 TUI 选择器，prompt 下方提示行末尾显示当前供应商和模型。
 
 ## License
 
