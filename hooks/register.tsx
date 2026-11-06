@@ -359,10 +359,10 @@ set it with /provider model <id>`
                   return
                 }
                 void (async () => {
-                  await switchTo($, node, chosen, true)
-                  $.ui.toast(`${chosen.name}${chosen.model ? ` · ${chosen.model}` : ''}`, {
-                    timeoutMs: 3_000,
-                  })
+                  const report = await switchTo($, node, chosen, true)
+                  const modelLine = report.split('\n').find(line => line.includes('model'))
+                  $.ui.log(report)
+                  $.ui.toast(modelLine?.trim() || chosen.name, { timeoutMs: 5_000 })
                   await $.ui.close({ id: PANE }).catch(() => undefined)
                 })()
               }}

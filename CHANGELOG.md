@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.3] - 2026-11-06
+
+- a switch made from the pane now writes its result into the transcript and the toast, so a failed model change is visible instead of silent
+
 ## [0.1.2] - 2026-11-06
 
 - `/provider model [<id>]` sets the model without opening the picker: config first, `/model` as fallback
