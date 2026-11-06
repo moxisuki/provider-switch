@@ -131,7 +131,13 @@ async function switchTo(
       await $.command.run({ command: 'model', args: provider.model })
       modelNote = `model → ${provider.model}`
     } catch (error) {
-      modelNote = `model not applied: ${error instanceof Error ? error.message : String(error)}`
+      const reason = error instanceof Error ? error.message : String(error)
+      modelNote =
+        `model NOT changed: ${reason}` +
+        `
+  the /model picker still lists the previous provider's aliases;` +
+        `
+  set it with /model ${provider.model} or restart the session`
     }
   }
 
@@ -170,6 +176,28 @@ function table(): string {
   })
   const head = `session ${PANEL.sessionId || '?'}  active: ${PANEL.activeName ?? 'from settings.json'}`
   return [head, '', ...rows, '', 'switch with /provider <name>'].join('\n')
+}
+
+function mask(value: string | undefined): string {
+  if (!value) return '(unset)'
+  if (value.length <= 8) return value
+  return `${value.slice(0, 6)}…`
+}
+
+async function envReport($: EngineInterface): Promise<string> {
+  const rows: Array<[string, string | undefined]> = [
+    ['ANTHROPIC_BASE_URL', await $.env.get('ANTHROPIC_BASE_URL').catch(() => undefined)],
+    ['ANTHROPIC_MODEL', await $.env.get('ANTHROPIC_MODEL').catch(() => undefined)],
+    ['ANTHROPIC_DEFAULT_OPUS_MODEL', await $.env.get('ANTHROPIC_DEFAULT_OPUS_MODEL').catch(() => undefined)],
+    ['ANTHROPIC_DEFAULT_SONNET_MODEL', await $.env.get('ANTHROPIC_DEFAULT_SONNET_MODEL').catch(() => undefined)],
+    ['ANTHROPIC_DEFAULT_HAIKU_MODEL', await $.env.get('ANTHROPIC_DEFAULT_HAIKU_MODEL').catch(() => undefined)],
+    ['ANTHROPIC_API_KEY', await $.env.get('ANTHROPIC_API_KEY').catch(() => undefined)],
+    ['ANTHROPIC_AUTH_TOKEN', await $.env.get('ANTHROPIC_AUTH_TOKEN').catch(() => undefined)],
+  ]
+  const width = Math.max(...rows.map(([key]) => key.length))
+  return rows
+    .map(([key, value]) => `${key.padEnd(width)}  ${key.endsWith('KEY') || key.endsWith('TOKEN') ? mask(value) : value ?? '(unset)'}`)
+    .join('\n')
 }
 
 async function loadProviders(
@@ -263,6 +291,8 @@ export const register: Register = (on, options) => {
       }
     }
     if (args === 'list') return { text: table() }
+    if (args === 'env') return { text: await envReport($) }
+
     if (args === 'reload') {
       await loadProviders($, node)
       await detectActive($)

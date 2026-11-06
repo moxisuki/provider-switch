@@ -59,6 +59,7 @@ Claude Code 会把它记为新会话的默认模型，这是引擎自身的行�
 - 只支持同协议（Anthropic Messages API）。换 Bedrock、Vertex 或别的 API 仍需要重启。
 - 每个变量名都在 `hooks/lib/env.ts` 里逐个写死——`$.env.set` 只接受字符串字面量，cc-switch 以后新增的变量会被报告而不是应用。
 - 正在进行的请求仍走旧供应商；每次切换会丢一次 prompt cache。
+- `/model` 的选择器列表是会话启动时按当时别名生成的，切换后会仍显示上一个供应商的模型；重启会话前请用 `/model <完整 id>` 直接指定。
 
 ## 许可
 

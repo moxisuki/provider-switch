@@ -66,6 +66,8 @@ behaviour; turn `switchModel` off in `/config` to leave the model untouched.
 - Every key is spelled out in `hooks/lib/env.ts` — `$.env.set` accepts only string literals, so a
   variable cc-switch adds later is reported, not applied.
 - In-flight requests finish on the old provider; prompt cache is lost once per switch.
+- `/model`'s picker builds its list from the aliases the session started with. After a switch it still
+  shows the previous provider's models, so pick by explicit id (`/model <id>`) until the session restarts.
 
 ## License
 
