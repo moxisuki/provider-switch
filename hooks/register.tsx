@@ -127,18 +127,7 @@ async function switchTo(
   if (!switchModelEnabled) {
     modelNote = provider.model ? `model left as is (switchModel off; would be ${provider.model})` : ''
   } else if (provider.model && provider.model !== previousModel) {
-    try {
-      await $.command.run({ command: 'model', args: provider.model })
-      modelNote = `model → ${provider.model}`
-    } catch (error) {
-      const reason = error instanceof Error ? error.message : String(error)
-      modelNote =
-        `model NOT changed: ${reason}` +
-        `
-  the /model picker still lists the previous provider's aliases;` +
-        `
-  set it with /model ${provider.model} or restart the session`
-    }
+    modelNote = await setModel($, provider.model)
   }
 
   PANEL.activeName = provider.name
@@ -198,6 +187,22 @@ async function envReport($: EngineInterface): Promise<string> {
   return rows
     .map(([key, value]) => `${key.padEnd(width)}  ${key.endsWith('KEY') || key.endsWith('TOKEN') ? mask(value) : value ?? '(unset)'}`)
     .join('\n')
+}
+
+async function setModel($: EngineInterface, model: string): Promise<string> {
+  try {
+    await $.config.set({ key: 'model', value: model })
+    return `model → ${model} (via config)`
+  } catch (error) {
+    const first = error instanceof Error ? error.message : String(error)
+    try {
+      await $.command.run({ command: 'model', args: model })
+      return `model → ${model} (via /model; config refused: ${first})`
+    } catch (second) {
+      const why = second instanceof Error ? second.message : String(second)
+      return `model NOT changed: ${why} (config said: ${first})`
+    }
+  }
 }
 
 async function loadProviders(
@@ -292,6 +297,20 @@ export const register: Register = (on, options) => {
     }
     if (args === 'list') return { text: table() }
     if (args === 'env') return { text: await envReport($) }
+
+    if (args === 'model' || args.startsWith('model ')) {
+      const wanted = args.slice(5).trim()
+      if (!wanted) {
+        const active = PANEL.providers.find(provider => provider.name === PANEL.activeName)
+        return {
+          text: active?.model
+            ? `${active.name} → ${active.model}
+set it with /provider model <id>`
+            : 'the active provider names no model',
+        }
+      }
+      return { text: await setModel($, wanted) }
+    }
 
     if (args === 'reload') {
       await loadProviders($, node)

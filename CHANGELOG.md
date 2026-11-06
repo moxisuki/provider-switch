@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.2] - 2026-11-06
+
+- `/provider model [<id>]` sets the model without opening the picker: config first, `/model` as fallback
+- switching a provider uses the same path, so a stale picker can no longer hand over the wrong model
+
 ## [0.1.1] - 2026-11-06
 
 - `/provider env` prints the variables the running process actually holds

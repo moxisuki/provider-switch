@@ -1,6 +1,6 @@
 {
   "name": "provider-switch",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Switch the API provider of a running Claude Code session with no restart. Depends on cc-switch: reads the provider list already configured there, applies the chosen env live, and records the choice per session.",
   "author": {
     "name": "moxisuki",
