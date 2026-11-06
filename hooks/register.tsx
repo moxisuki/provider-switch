@@ -190,17 +190,19 @@ async function envReport($: EngineInterface): Promise<string> {
 }
 
 async function setModel($: EngineInterface, model: string): Promise<string> {
+  // Only /model moves the running session's model. The config row writes the setting
+  // but the engine keeps the model it resolved at start, so config is the fallback.
   try {
-    await $.config.set({ key: 'model', value: model })
-    return `model → ${model} (via config)`
+    await $.command.run({ command: 'model', args: model })
+    return `model → ${model} (via /model)`
   } catch (error) {
     const first = error instanceof Error ? error.message : String(error)
     try {
-      await $.command.run({ command: 'model', args: model })
-      return `model → ${model} (via /model; config refused: ${first})`
+      await $.config.set({ key: 'model', value: model })
+      return `model → ${model} (config row only; /model said: ${first} — restart for it to take effect)`
     } catch (second) {
       const why = second instanceof Error ? second.message : String(second)
-      return `model NOT changed: ${why} (config said: ${first})`
+      return `model NOT changed: ${why} (/model said: ${first})`
     }
   }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.4] - 2026-11-06
+
+- the model is applied through `/model` first: the config row accepts a value but does not move the running session, so it is now only the fallback
+
 ## [0.1.3] - 2026-11-06
 
 - a switch made from the pane now writes its result into the transcript and the toast, so a failed model change is visible instead of silent
